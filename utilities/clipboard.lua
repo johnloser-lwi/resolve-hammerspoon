@@ -1,8 +1,11 @@
--- Clipboard case conversion — port of utilities/Clipboard.ahk. Active everywhere.
+-- Clipboard utilities — port of utilities/Clipboard.ahk. Active everywhere.
 --
 --   Ctrl+Shift+Alt+V  pop up a menu at the cursor, convert the clipboard text
 --                     and paste it.
-local keys = require("lib.keys")
+--   Ctrl+Alt+V        open the clipboard history in Spotlight (Mac only).
+local config = require("config")
+local keys   = require("lib.keys")
+local util   = require("lib.util")
 
 local C = {}
 
@@ -130,8 +133,19 @@ function C.showMenu()
     menu:popupMenu(hs.mouse.absolutePosition())
 end
 
+-- Clipboard history: open Spotlight (Cmd+Space), then its Clipboard view
+-- (Cmd+4). Sent as exact Mac keys, not through the ^ -> Cmd translation.
+function C.showHistory()
+    util.async(function()
+        keys.send({ { "cmd" }, "space" })
+        util.sleep(config.timing.spotlightOpen)
+        keys.send({ { "cmd" }, "4" })
+    end)
+end
+
 function C.bind(g)
     g:bind("^+!v", C.showMenu)
+    g:bind("^!v", C.showHistory)   -- Ctrl+Option+V
 end
 
 return C

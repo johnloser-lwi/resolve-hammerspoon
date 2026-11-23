@@ -109,7 +109,7 @@ C.gregTextPlus = {
 
 C.wippZoom = {
     matchRefresh = { x = 2245, y = 344 },
-    swap         = { x = 2434, y = 350 },
+    swap         = { x = 2385, y = 590 },
     refreshSize  = { x = 2477, y = 428 },
     refreshSizeApplyOffsetX = 30,   -- second click lands this far right of refreshSize
 }
@@ -199,6 +199,7 @@ C.timing = {
     click           = 0.01,   -- mouse down -> mouse up for each synthetic click
     afterSearchOpen = 0.05,   -- after the search key, before typing the effect name
     beforeEnter     = 0.25,   -- after typing the name, before Return (lets Resolve filter the list)
+    spotlightOpen   = 0.2,    -- Ctrl+Option+V: wait for Spotlight before Cmd+4 (clipboard history)
 }
 
 -- Reload Hammerspoon automatically when a .lua file in this folder changes.
