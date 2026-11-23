@@ -181,9 +181,14 @@ C.openProjectFolder = {
 C.purgeCommand = { "/usr/bin/sudo", "-n", "/usr/sbin/purge" }
 
 -- ---------------------------------------------------------------------------
--- Swiftpoint mouse profiles (not implemented yet)
+-- Swiftpoint X1 mouse profiles (per-layout names are in C.layouts above).
+-- Needs "Enable X1 API" turned on in the X1 Control Panel options.
 -- ---------------------------------------------------------------------------
-C.mouseProfile = { enabled = false }
+C.mouseProfile = {
+    enabled    = true,
+    socketPath = "/tmp/swiftpoint.x1.v2.command",
+    timeout    = 2,   -- seconds
+}
 
 -- ---------------------------------------------------------------------------
 -- Timing (seconds). AHK's own Sleep values are kept in the macro code; these

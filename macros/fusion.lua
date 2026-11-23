@@ -2,7 +2,7 @@
 --
 -- Quick-apply slots (StarCraft-style control groups for Fusion nodes):
 --   Ctrl+Shift+1..9, Ctrl+Shift+0   copy the selected nodes, save to slot 1..10
---   Ctrl+1..9, Ctrl+0               paste slot 1..10 into the node editor
+--   Cmd+1..9, Cmd+0                 paste slot 1..10 into the node editor
 --   (the 0 key is slot 10)
 --
 -- Each slot is a plain-text file in slots/ next to this project, with separate
@@ -77,7 +77,9 @@ function F.bind(g)
     for n = 1, 10 do
         local digit = tostring(n % 10)
         g:bind("^+" .. digit, function() F.saveSlot(n) end)
-        g:bind("^" .. digit, function() F.pasteSlot(n) end)
+        -- Paste is on Cmd (#) instead of Ctrl: another app on this Mac holds
+        -- Ctrl+1 and Ctrl+2 system-wide, so they can't be registered.
+        g:bind("#" .. digit, function() F.pasteSlot(n) end)
     end
 end
 

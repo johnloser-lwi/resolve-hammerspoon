@@ -19,12 +19,6 @@ All settings live in [`config.lua`](config.lua): modifier mapping, coordinates, 
 5. **Resolve keyboard preset.** The macros press Resolve shortcuts for you, with Ctrl turned into Cmd (see below). For example, the effect search shortcut (sent as literal **Ctrl+Space**, see `config.searchKey`), `Tab`, `h`, `Cmd+Shift+Alt+1` and `Cmd+Shift+Alt+9` must exist in your Mac keyboard preset.
 6. **Resolve scripting** (Open Project Folder only). Go to Preferences → System → General → *External scripting using* = **Local**.
 
-### Known macOS conflicts
-
-| Combo | Conflict | Fix |
-|---|---|---|
-| `Ctrl+1` (paste Fusion slot 1) | Already registered by macOS or another app on this Mac | Find and turn off that shortcut. Slots 2–10 work. |
-
 ---
 
 ## Keys: Windows → Mac
@@ -46,7 +40,7 @@ So every shortcut in this README uses the **same physical keys as on Windows**, 
 
 Hold `Ctrl+Shift+Q` and a menu opens at the cursor. Move the cursor onto a layout and release Q to pick it. Releasing Q off the menu cancels. The choices are **Edit** (default), Fusion, Color, Fairlight, Delivery and None.
 
-Picking a layout switches Resolve to that page (`Shift+4`…`8`; Fusion also sends `h` first). It also selects the Swiftpoint mouse profile, which is a placeholder for now (see *Mouse*). Page keys are only sent when Resolve is in front.
+Picking a layout switches Resolve to that page (`Shift+4`…`8`; Fusion also sends `h` first). It also switches the Swiftpoint X1 mouse profile (see *Mouse*). Page keys are only sent when Resolve is in front.
 
 **Caption** (`macros/caption.lua`) is ported but left out of the menu, as in the AHK version. Add `"Caption"` to `config.macroModes` to use it.
 
@@ -88,7 +82,7 @@ These work in the **Fusion** layout, and always in standalone Fusion Studio.
 | Shortcut | Action |
 |---|---|
 | `Ctrl+Shift+1`–`9`, `0` | Copy the selected nodes and save them to slot 1–10 |
-| `Ctrl+1`–`9`, `0` | Paste slot 1–10 into the node editor |
+| `Cmd+1`–`9`, `0` | Paste slot 1–10 into the node editor (Ctrl+1/2 are held by another app on this Mac, so paste moved to Cmd; these override Resolve's own Cmd+number shortcuts while the Fusion layout is active) |
 
 Slots are text files in `slots/` (git-ignored): `resolve_slotN.txt` and `studio_slotN.txt`. A small tooltip by the cursor confirms each save and paste.
 
@@ -147,14 +141,17 @@ echo "$(whoami) ALL=(root) NOPASSWD: /usr/sbin/purge" | sudo tee /etc/sudoers.d/
 
 `config.coordMode = "screen"` uses absolute Hammerspoon coordinates: the origin is the top-left of the main display and y grows downward. `"window"` makes every point relative to Resolve's focused window, so points still line up after the window moves. `Ctrl+Shift+Option+P` shows both and copies whichever mode is active.
 
-## Mouse (Swiftpoint) — not done yet
+## Mouse (Swiftpoint X1)
 
-On Windows, the AHK version switched the Swiftpoint profile through the X1 API pipe on every layout change and whenever Resolve got focus. Those calls are already wired up here, but [`utilities/mouse_profile.lua`](utilities/mouse_profile.lua) only logs the profile name until the macOS side of the API is worked out.
+Each layout switches the X1 mouse profile (`mouseProfile` in `config.layouts`): Edit → `DavinciResolve`, Fusion → `Resolve-Fusion`, and so on. This happens when you pick a layout and whenever Resolve comes to the front, as in the AHK version. Hammerspoon sends `Profile Set <name>` to the X1 Control Panel's API socket, `/tmp/swiftpoint.x1.v2.command` (the macOS version of the Windows pipe). If the X1 app can't be reached, a tooltip says so; an error reply shows an alert.
+
+This needs **"Enable X1 API"** turned on in the X1 Control Panel options; restart the X1 app after turning it on. Set `config.mouseProfile.enabled = false` to turn this off.
 
 ## Differences from the AHK version
 
 - The layout and plugin menus include **None**, as the AHK README described (the AHK code had dropped it).
 - A short on-screen note confirms each layout or plugin change.
+- X1 API errors show a brief alert instead of a blocking message box.
 - Page-switch keys are only sent when Resolve is frontmost.
 - Open Project Folder uses `fuscript` instead of Python and tkinter.
 - Explorer Focus (Win+Ctrl+Alt+Space) is not ported.
