@@ -1,0 +1,71 @@
+# ===========================================================================
+# Resolve Hammerspoon
+# ===========================================================================
+
+# Fusion quick-apply slot contents (user data, can be hundreds of KB each)
+slots/
+
+# Personal overrides / scratch files, if you ever add them
+*.local.lua
+config.local.lua
+scratch/
+tmp/
+
+# Logs and debug output
+*.log
+logs/
+
+# ===========================================================================
+# Lua
+# ===========================================================================
+*.luac
+*.out
+luacov.*.out
+.luarocks/
+lua_modules/
+/.luacheckcache
+
+# ===========================================================================
+# macOS
+# ===========================================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# ===========================================================================
+# Windows (in case the folder is shared with the AHK machine)
+# ===========================================================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===========================================================================
+# Editors / IDEs
+# ===========================================================================
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.sublime-workspace
+*.swp
+*.swo
+*~
+.history/
+
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json
