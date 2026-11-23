@@ -16,10 +16,12 @@ local function finish()
     local d = drag
     if not d then return end
     drag = nil
-    d.watch:stop()
     d.tap:stop()
     mouse.leftUp()
 end
+
+local myPid = hs.processInfo.processID
+local srcPid = hs.eventtap.event.properties.eventSourceUnixProcessID
 
 local function start(pt, mods)
     if drag then return end
@@ -28,25 +30,37 @@ local function start(pt, mods)
     hs.timer.usleep(15000)
     mouse.leftDown(p)
 
-    -- A synthetic button-down doesn't make macOS report the physical mouse's
-    -- movement as a drag, so turn mouse-moved events into left-drag events
-    -- for as long as the key is held.
-    local tap = hs.eventtap.new({ types.mouseMoved, types.leftMouseDragged }, function(e)
-        if e:getType() == types.mouseMoved then e:setType(types.leftMouseDragged) end
+    local tap = hs.eventtap.new({ types.mouseMoved, types.leftMouseDragged, types.flagsChanged }, function(e)
+        local t = e:getType()
+
+        -- Release when one of the hotkey's modifiers (Ctrl/Option) is let go,
+        -- like the AHK loop. Only real keyboard events count: macOS's overall
+        -- modifier state can't be used, because posting our modifier-free
+        -- click makes it report Ctrl/Option as released while you still hold
+        -- them, which used to end the drag instantly.
+        if t == types.flagsChanged then
+            if e:getProperty(srcPid) ~= myPid then
+                local flags = e:getFlags()
+                for _, m in ipairs(mods) do
+                    if not flags[m] then
+                        hs.timer.doAfter(0, finish)
+                        break
+                    end
+                end
+            end
+            return false
+        end
+
+        -- A synthetic button-down doesn't make macOS report the physical
+        -- mouse's movement as a drag, so turn mouse-moved events into
+        -- left-drag events for as long as the key is held.
+        if t == types.mouseMoved then e:setType(types.leftMouseDragged) end
         if config.gregTextPlus.stripModifiers then e:setFlags({}) end
         return false
     end)
     tap:start()
 
-    -- Release if any of the hotkey's modifiers is let go (AHK checked Ctrl+Alt).
-    local watch = hs.timer.doEvery(0.01, function()
-        local held = hs.eventtap.checkKeyboardModifiers()
-        for _, m in ipairs(mods) do
-            if not held[m] then return finish() end
-        end
-    end)
-
-    drag = { tap = tap, watch = watch }
+    drag = { tap = tap }
 end
 
 function G.bind(g)
@@ -60,7 +74,8 @@ function G.bind(g)
     dragKey("^!s", c.size)
 end
 
--- Safety: if Hammerspoon reloads mid-drag, never leave the button down.
+-- Start/stop a drag by hand (debugging from the console or `hs`).
+G.start = start
 function G.stop() finish() end
 
 return G
