@@ -124,10 +124,10 @@ Ctrl and Option are stripped from the drag (`stripModifiers`), because Ctrl+clic
 | Shortcut | Action |
 |---|---|
 | `Ctrl+Shift+Option+V` | Clipboard case menu: ALL CAPS, lowercase, Title Case, Capitalize Each Word, Sentence case. It converts the clipboard text and pastes it. |
-| `Ctrl+Option+V` | Clipboard history: opens Spotlight (`Cmd+Space`) and switches to its Clipboard view (`Cmd+4`). Mac-only addition; the delay between the two is `timing.spotlightOpen`. |
 | `Ctrl+Shift+Option+O` | Open Project Folder: a menu for ARoll, BRoll, Audio, Images, Footages, Exports and Project Root of the current Resolve project. Press 1–7 or click; Esc closes. |
 | `Ctrl+Shift+Option+P` | Show the mouse position (screen, window and monitor) with a button to copy it in `config.lua` format |
 | `Ctrl+Cmd+Option+Delete` | Free inactive memory with `purge`, the Mac stand-in for RAMMap `-Et` |
+| `Ctrl+Cmd+Option+Esc` (press twice) | Force-quit a frozen DaVinci Resolve (`pkill -9`). Mac-only addition for when a hung Resolve also freezes the mouse; the first press only arms it for 2 seconds, and unsaved work is lost. |
 
 **Open Project Folder** asks Resolve through its bundled `fuscript`, so it needs no Python. Projects made on Windows still store Windows paths (e.g. `D:/Work/...`). Map them with `config.openProjectFolder.pathMappings`.
 

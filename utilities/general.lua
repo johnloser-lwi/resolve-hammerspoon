@@ -2,6 +2,7 @@
 --
 --   Ctrl+Shift+Alt+P     show mouse coordinates (for calibrating config.lua)
 --   Ctrl+Cmd+Alt+Delete  free inactive memory (Mac stand-in for RAMMap -Et)
+--   Ctrl+Cmd+Alt+Esc     force-quit a frozen DaVinci Resolve (press twice)
 local config = require("config")
 local util   = require("lib.util")
 
@@ -56,8 +57,33 @@ function G.purgeMemory()
     task:start()
 end
 
+-- Force-quit Resolve when it hangs and takes the mouse with it. Press twice
+-- within two seconds (a single stray press can't throw away unsaved work).
+-- Uses pkill -9 on the process path: it never talks to Resolve itself, so a
+-- hung Resolve can't block it the way accessibility/window lookups would.
+local armedUntil = 0
+function G.forceQuitResolve()
+    local now = hs.timer.secondsSinceEpoch()
+    if now > armedUntil then
+        armedUntil = now + 2
+        hs.alert.closeAll()
+        hs.alert.show("Press again to FORCE-QUIT DaVinci Resolve", 2)
+        return
+    end
+    armedUntil = 0
+    hs.alert.closeAll()
+    hs.task.new("/usr/bin/pkill", function(code)
+        if code == 0 then
+            hs.alert.show("DaVinci Resolve force-quit", 1.5)
+        else
+            hs.alert.show("DaVinci Resolve isn't running", 1.5)
+        end
+    end, { "-9", "-f", "DaVinci Resolve.app/Contents/MacOS/Resolve" }):start()
+end
+
 function G.bind(g)
     g:bind("^+!p", G.showPointer)
+    g:bind("^#!{Esc}", G.forceQuitResolve)
     -- Windows used Ctrl+Win+Alt+Delete; Mac keyboards have no forward-delete
     -- key, so this is the key labeled "delete" (Windows Backspace).
     g:bind("^#!{Backspace}", G.purgeMemory)
