@@ -191,6 +191,19 @@ C.mouseProfile = {
 }
 
 -- ---------------------------------------------------------------------------
+-- Keyboard modifiers + mouse keys (utilities/modifier_merge.lua)
+--
+-- The X1 sends keys like Up/Down from mouse buttons, but on macOS those keys
+-- ignore the Option/Ctrl/Shift/Cmd you hold on the keyboard (Windows merged
+-- them). Keys listed here get the held modifiers added back, so holding
+-- Option + the mouse's Up button gives Option+Up again.
+-- ---------------------------------------------------------------------------
+C.modifierMerge = {
+    enabled = true,
+    keys    = { "up", "down", "left", "right", "home", "end", "pageup", "pagedown" },
+}
+
+-- ---------------------------------------------------------------------------
 -- Timing (seconds). AHK's own Sleep values are kept in the macro code; these
 -- are the Mac-only knobs.
 -- ---------------------------------------------------------------------------

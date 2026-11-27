@@ -148,6 +148,8 @@ Each layout switches the X1 mouse profile (`mouseProfile` in `config.layouts`): 
 
 This needs **"Enable X1 API"** turned on in the X1 Control Panel options; restart the X1 app after turning it on. Set `config.mouseProfile.enabled = false` to turn this off.
 
+**Keyboard modifiers + mouse keys.** When an X1 button sends a key like Up or Down, macOS ignores the modifiers you're holding on the keyboard. Windows combined them, so Alt + mouse-Up gave Alt+Up. `utilities/modifier_merge.lua` adds the held Option/Ctrl/Shift/Cmd back onto those keys, so Option + mouse-Up is Option+Up again. Keys typed on the keyboard and Hammerspoon's own keystrokes are left alone. The key list is `config.modifierMerge.keys` (arrows, Home/End, Page Up/Down); set `enabled = false` to turn it off.
+
 ## Differences from the AHK version
 
 - The layout and plugin menus include **None**, as the AHK README described (the AHK code had dropped it).

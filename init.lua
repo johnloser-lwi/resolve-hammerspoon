@@ -24,6 +24,8 @@ local everywhere = bindings.group("Utilities", function() return true end)
 require("utilities.general").bind(everywhere)
 require("utilities.clipboard").bind(everywhere)
 require("utilities.open_project_folder").bind(everywhere)
+-- Keyboard modifiers held while the mouse sends arrow keys (Option+mouse-Up).
+require("utilities.modifier_merge").start()
 -- (Explorer Focus / Win+Ctrl+Alt+Space intentionally not ported.)
 
 -- Macro layout switcher (Ctrl+Shift+Q) and plugin mode system (Ctrl+Alt+Q).
